@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.management.relation.Role;
 import java.time.LocalDate;
 
 @Document(collection = "users") // Define la colección de MongoDB
@@ -33,7 +34,7 @@ public class User {
     private String address;
 
     @NotBlank
-    private String role; // USER, ADMIN, etc.
+    private Role role; // USER, ADMIN, etc.
 
     // Getters y Setters
 
@@ -93,11 +94,11 @@ public class User {
         this.address = address;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 }
