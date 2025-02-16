@@ -48,4 +48,9 @@ public class UserService {
     public void deleteUserById(String id) {
         userCrudRepository.deleteById(id);
     }
+
+    public boolean matchesPassword(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
 }

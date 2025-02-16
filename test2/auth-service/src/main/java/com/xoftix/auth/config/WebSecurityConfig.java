@@ -26,7 +26,8 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Configuramos las rutas
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users").permitAll()  // Registro sin autenticación
+                        .requestMatchers("/users").permitAll()
+                        .requestMatchers("/login").permitAll() // Registro sin autenticación
                         .anyRequest().authenticated()                  //  Lo demás requiere autenticación
                 );
         return http.build();
@@ -38,7 +39,7 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // 3️⃣ Definir un UserDetailsService vacío
+    //    Definir un UserDetailsService vacío
     //    para evitar que Spring cree un usuario por defecto y
     //    genere la contraseña aleatoria en los logs
     @Bean
