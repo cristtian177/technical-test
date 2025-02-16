@@ -1,5 +1,6 @@
 package com.xoftix.auth.domain.service;
 
+import com.xoftix.auth.config.JwtUtil;
 import com.xoftix.auth.persistence.entity.User;
 import org.springframework.stereotype.Service;
 
@@ -7,23 +8,24 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
-    public AuthService(UserService userService) {
+    public AuthService(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
     public String login(String email, String password) {
-        // 1. Buscar usuario por email
+        // 1. Buscar usuario
         User user = userService.getUserByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("El email no existe"));
 
         // 2. Verificar contraseña
-        //    matchesPassword(...) es un método que crearemos en UserService
         if (!userService.matchesPassword(password, user.getPassword())) {
             throw new IllegalArgumentException("Credenciales inválidas");
         }
 
-        // 3. Retornar un mensaje simple (sin JWT)
-        return "Login correcto";
+        // 3. Generar token JWT
+        return jwtUtil.generateToken(user);
     }
 }

@@ -2,41 +2,49 @@ package com.xoftix.auth.config;
 
 import com.xoftix.auth.persistence.entity.User;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret:MiClaveSecreta}")
+    @Value("${jwt.secret}")
     private String secretKey;
 
-    // Duración de token en milisegundos (ej: 1 día)
-    @Value("${jwt.expiration:86400000}")
-    private long expirationTime;
+    @Value("${jwt.expiration}")
+    private long expirationTime; // 1 día por defecto
 
     public String generateToken(User user) {
         long now = System.currentTimeMillis();
         Date nowDate = new Date(now);
         Date expDate = new Date(now + expirationTime);
 
+        // Convertimos la clave secreta a bytes y creamos un SecretKey con Keys.hmacShaKeyFor
+        // Asegúrate de que secretKey tenga >=32 chars
+        SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+
         return Jwts.builder()
-                .setSubject(user.getEmail()) // El 'subject' será el email
-                .claim("role", user.getRole().name()) // Guardamos el rol
+                .setSubject(user.getEmail())                  // Subject: email del usuario
+                .claim("role", user.getRole().name())         // Rol (USER, ADMIN, etc.)
                 .setIssuedAt(nowDate)
                 .setExpiration(expDate)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .parseClaimsJws(token); // lanza excepción si no es válido
+            SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
@@ -44,16 +52,20 @@ public class JwtUtil {
     }
 
     public String getEmailFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
+        SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
     public String getRoleFromToken(String token) {
-        return (String) Jwts.parser()
-                .setSigningKey(secretKey)
+        SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        return (String) Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .get("role");
