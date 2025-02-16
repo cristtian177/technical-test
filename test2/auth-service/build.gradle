@@ -18,6 +18,17 @@ repositories {
 }
 
 dependencies {
+
+	// Starter de Spring Boot para MongoDB, proporciona integración con MongoDB
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+	// Starter de Spring Boot para construir aplicaciones web, incluyendo servicios RESTful
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Driver de MongoDB para operaciones sincrónicas
+	runtimeOnly 'org.mongodb:mongodb-driver-sync'
+
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
