@@ -3,6 +3,7 @@ package com.xoftix.auth.web.controller;
 import com.xoftix.auth.domain.service.UserService;
 import com.xoftix.auth.persistence.entity.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class UserController {
 
     // 🔹 Guardar un usuario
     @PostMapping
-    public ResponseEntity<User> saveUser(@RequestBody User user) {
+    public ResponseEntity<User> saveUser(@Validated @RequestBody User user) {
         User savedUser = userService.saveUser(user);
         return ResponseEntity.ok(savedUser);
     }

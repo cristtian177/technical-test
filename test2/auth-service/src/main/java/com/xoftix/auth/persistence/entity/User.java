@@ -4,7 +4,6 @@ import jakarta.validation.constraints.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.management.relation.Role;
 import java.time.LocalDate;
 
 @Document(collection = "users") // Define la colección de MongoDB
@@ -17,8 +16,8 @@ public class User {
     @Size(min = 3, max = 50)
     private String username;
 
-    @Email
-    @NotBlank
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "Formato de email inválido")
     private String email;
 
     @NotBlank
@@ -33,7 +32,7 @@ public class User {
 
     private String address;
 
-    @NotBlank
+
     private Role role; // USER, ADMIN, etc.
 
     // Getters y Setters
