@@ -19,6 +19,9 @@ repositories {
 
 dependencies {
 
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+
 	// Starter de Spring Boot para MongoDB, proporciona integración con MongoDB
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
