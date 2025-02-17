@@ -41,6 +41,7 @@ public class UserController {
 
     // Obtener un usuario por email
     @GetMapping("/{email}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         Optional<User> user = userService.getUserByEmail(email);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
