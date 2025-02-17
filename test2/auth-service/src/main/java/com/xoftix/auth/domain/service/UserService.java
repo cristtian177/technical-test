@@ -4,6 +4,7 @@ import com.xoftix.auth.persistence.crud.UserCrudRepository;
 import com.xoftix.auth.persistence.entity.User;
 import com.xoftix.auth.persistence.entity.Role;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
