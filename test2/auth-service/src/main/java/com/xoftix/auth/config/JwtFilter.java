@@ -40,10 +40,12 @@ public class JwtFilter extends OncePerRequestFilter {
                 String email = jwtUtil.getEmailFromToken(token);
                 String role = jwtUtil.getRoleFromToken(token);
 
+                //System.out.println(">>>> Filtro JWT: email=" + email + ", role=" + role);
+
+
                 // 4. Crear un objeto de autenticación con el rol
-                SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(email, null, Collections.singletonList(authority));
+                        new UsernamePasswordAuthenticationToken(email, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)));
 
                 // 5. Guardar en el SecurityContextHolder
                 SecurityContextHolder.getContext().setAuthentication(authentication);

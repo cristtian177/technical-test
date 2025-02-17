@@ -12,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -19,24 +20,32 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 public class WebSecurityConfig {
 
-    // 1️⃣ Definir el filtro de seguridad personalizado
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                // Desactivamos CSRF para que funcione el POST desde Postman
-                .csrf(AbstractHttpConfigurer::disable)
-                // No queremos sesiones (usaremos JWT más adelante)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // Configuramos las rutas
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users").permitAll()
-                        .requestMatchers("/login").permitAll() // Registro sin autenticación
-                        .anyRequest().authenticated()                  //  Lo demás requiere autenticación
-                );
-        return http.build();
+    private final JwtFilter jwtFilter;
+
+    public WebSecurityConfig(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
     }
 
-    // 2️⃣ Definir un PasswordEncoder (BCrypt) para encriptar contraseñas
+    //  Definir el filtro de seguridad personalizado
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        // Registrar usuario sin token
+                        .requestMatchers("/users").permitAll() // POST /users
+                        // Login sin token
+                        .requestMatchers("/login").permitAll() // POST /login
+                        // Lo demás requiere token
+                        .anyRequest().authenticated()
+                )
+                // Registrar JwtFilter
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+
+    //  Definir un PasswordEncoder (BCrypt) para encriptar contraseñas
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
