@@ -37,6 +37,12 @@ public class WebSecurityConfig {
                         .requestMatchers("/users").permitAll() // POST /users
                         // Login sin token
                         .requestMatchers("/login").permitAll() // POST /login
+                        // Para Swagger (OpenAPI)
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**"
+                        ).permitAll()
                         // Lo demás requiere token
                         .anyRequest().authenticated()
                 )
