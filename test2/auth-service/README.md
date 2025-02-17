@@ -44,7 +44,7 @@ Este directorio contiene un **microservicio** desarrollado con **Spring Boot** y
 
 4. **Ejecuta** el `.jar` generado:
    ```bash
-   java -jar build/libs/auth-service.jar
+    java -jar build/libs/auth-0.0.1-SNAPSHOT.jar
    ```
 
 ---
