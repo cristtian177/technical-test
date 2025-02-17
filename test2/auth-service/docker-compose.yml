@@ -28,3 +28,6 @@ services:
       - JWT_EXPIRATION=86400000
     depends_on:
       - mongodb
+
+volumes:
+  mongo_data:
